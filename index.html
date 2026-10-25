@@ -125,22 +125,17 @@ a.cv-btn:hover{opacity:.88; text-decoration:none}
 .stat-num{font-family:var(--font-display); font-size:2rem; font-weight:600; line-height:1}
 .stat-label{font-family:var(--font-mono); font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-top:6px}
 .photo-reveal{
-  display:inline-block; width:230px; max-width:100%; margin-top:18px;
+  display:block; width:280px; max-width:100%; margin:18px auto 0;
   padding:0; border:1px solid var(--border); background:none; cursor:pointer;
-  position:relative; overflow:hidden; font:inherit; text-align:left; vertical-align:top;
+  position:relative; overflow:hidden; font:inherit; text-align:left;
 }
 .photo-reveal img{
-  display:block; width:100%; height:150px; object-fit:cover;
+  display:block; width:100%; height:172px; object-fit:cover;
   filter:grayscale(1) brightness(1.08) contrast(.9); opacity:.78;
   transition:filter .35s ease, opacity .35s ease;
 }
 .photo-reveal:hover img, .photo-reveal:focus-visible img, .photo-reveal.revealed img{
   filter:none; opacity:1;
-}
-.photo-reveal-cap{
-  position:absolute; left:0; right:0; bottom:0; padding:7px 10px;
-  font-family:var(--font-mono); font-size:.68rem; letter-spacing:.05em; text-transform:uppercase;
-  color:#fff; background:linear-gradient(transparent, rgba(0,0,0,.6));
 }
 
 /* sections */
@@ -204,6 +199,7 @@ h2.sectitle{font-size:1.5rem; margin-bottom:22px}
 /* teaching */
 .teach-block{margin-bottom:26px}
 .teach-inst{font-weight:600; margin-bottom:4px}
+.teach-role{color:var(--accent); font-weight:500; font-size:.85rem}
 .teach-when{color:var(--muted); font-size:.85rem; font-family:var(--font-mono)}
 .teach-list{margin:10px 0 0; padding:0; list-style:none}
 .teach-list li{padding:6px 0; font-size:.95rem; border-top:1px solid var(--border)}
@@ -223,6 +219,7 @@ h2.sectitle{font-size:1.5rem; margin-bottom:22px}
 .conf-list li:first-child{border-top:none}
 .conf-year{font-family:var(--font-mono); color:var(--muted); min-width:2.6em; flex:none}
 .conf-loc{color:var(--muted)}
+.conf-cite{color:var(--muted); font-size:.82rem; display:block; margin-top:4px}
 
 /* contact / footer */
 footer{padding-block:48px 64px}
@@ -333,10 +330,18 @@ footer{padding-block:48px 64px}
   </div>
 
   <div class="tl-item">
-    <div class="tl-date tabular">Feb 2013 — Dec 2016</div>
+    <div class="tl-date tabular">Feb 2013 — Mar 2014</div>
     <div>
-      <div class="tl-org">Total Instrumentation Services · Phillips Carbon Black Ltd., Cochin, India</div>
-      <div class="tl-role">Site Project Engineer → Assistant Manager (Instrumentation)</div>
+      <div class="tl-org">Total Instrumentation Services, Cochin, India</div>
+      <div class="tl-role">Site Project Engineer (Instrumentation)</div>
+    </div>
+  </div>
+
+  <div class="tl-item">
+    <div class="tl-date tabular">Jul 2011 — Dec 2012</div>
+    <div>
+      <div class="tl-org">Phillips Carbon Black Ltd., Cochin, India</div>
+      <div class="tl-role">Assistant Manager (Instrumentation)</div>
     </div>
   </div>
 
@@ -397,14 +402,14 @@ footer{padding-block:48px 64px}
   <div class="pub-item">
     <div class="pub-year tabular">2025</div>
     <div class="pub-body">
-      <p>Feijoo, F., Kundu, A., Flores, F., &amp; Paredes, P. Energy community strategies based on heat and electricity demand response and technology efficiency: A Stackelberg approach. <span class="pub-venue">Renewable Energy.</span> <span class="status-tag">Under review</span></p>
+      <p>Feijoo, F., Kundu, A., Flores, F., &amp; Paredes, P. Energy community strategies based on heat and electricity demand response and technology efficiency: A Stackelberg approach. <span class="pub-venue">Renewable Energy.</span> <span class="status-tag">Under second review</span></p>
     </div>
   </div>
 
   <div class="pub-item">
     <div class="pub-year tabular">2025</div>
     <div class="pub-body">
-      <p>Kundu, A., &amp; Feijoo, F. A study on coalition formation and bargaining power for the North American natural gas market. <span class="pub-venue">Utilities Policy.</span> <span class="status-tag">Under review</span></p>
+      <p>Kundu, A., &amp; Feijoo, F. A study on coalition formation and bargaining power for the North American natural gas market. <span class="pub-venue">Utilities Policy.</span> <span class="status-tag">Under second review</span></p>
       <div class="pub-links"><a href="http://dx.doi.org/10.2139/ssrn.5442696">Preprint (SSRN) ↗</a></div>
     </div>
   </div>
@@ -489,7 +494,7 @@ footer{padding-block:48px 64px}
   <h2 class="sectitle">Courses</h2>
 
   <div class="teach-block">
-    <div class="teach-inst">Pontificia Universidad Católica de Valparaíso, Chile</div>
+    <div class="teach-inst">Pontificia Universidad Católica de Valparaíso, Chile <span class="teach-role">· Lecturer</span></div>
     <div class="teach-when">Jul 2023 — Present</div>
     <ul class="teach-list">
       <li><b>EII808</b> Programación Matemática <span class="lvl">· Ph.D. Level</span></li>
@@ -499,7 +504,7 @@ footer{padding-block:48px 64px}
   </div>
 
   <div class="teach-block">
-    <div class="teach-inst">Texas Tech University, Lubbock, TX</div>
+    <div class="teach-inst">Texas Tech University, Lubbock, TX <span class="teach-role">· Graduate Part-time Instructor / Teaching and Lab Assistant</span></div>
     <div class="teach-when">Sep 2016 — Oct 2021</div>
     <ul class="teach-list">
       <li><b>Optimization:</b> IE 3311 Deterministic Operations Research <span class="lvl">(Undergraduate Level)</span>; IE 5318 Operations Research Modeling with Spreadsheets <span class="lvl">(Graduate Level)</span></li>
@@ -536,11 +541,10 @@ footer{padding-block:48px 64px}
     <li><span class="conf-year tabular">2018</span><span>Assessment of Risk Based Metrics for Adverse Events in Oncology Clinical Trials <span class="conf-loc">— III Workshop on Data Science, Valparaíso</span></span></li>
     <li><span class="conf-year tabular">2018</span><span>Integrated Covering &amp; Routing Problems: Applications in Drone Assisted Logistics Operations <span class="conf-loc">— INFORMS, Phoenix</span></span></li>
     <li><span class="conf-year tabular">2017</span><span>Establishing Energy Efficient Paths for Delivery Drones in Direction Dependent Uniform Wind-fields <span class="conf-loc">— INFORMS, Houston</span></span></li>
-    <li><span class="conf-year tabular">2017</span><span>A Delivery Time Reduction Heuristic using Drones under Windy Conditions <span class="conf-loc">— IISE, Pittsburgh</span></span></li>
+    <li><span class="conf-year tabular">2017</span><span>A Delivery Time Reduction Heuristic using Drones under Windy Conditions <span class="conf-loc">— IISE, Pittsburgh</span><br><span class="conf-cite">Kundu, A., &amp; Matis, T. I. (2017). <em>IIE Annual Conference Proceedings</em> — Institute of Industrial and Systems Engineers (IISE), pp. 1864–1869.</span></span></li>
   </ul>
   <button type="button" class="photo-reveal" aria-label="Photo: presenting at SDEWES Rome, 2024 — click to view in color">
     <img src="assets/roma-2024.jpg" alt="Presenting at the SDEWES Conference, Rome 2024">
-    <span class="photo-reveal-cap">SDEWES Rome, 2024</span>
   </button>
 
   <div class="svc-sub">Service</div>
@@ -548,7 +552,7 @@ footer{padding-block:48px 64px}
     <li><b>Scientific Advisory Board</b>, SDEWES Conference — Rome (2024), Dubrovnik (2025), Oujda-Saidia (2025), Gran Canaria (2026), Cartagena (2026), Dar es Salaam (2027).</li>
     <li><b>Session Chair</b>, SDEWES Conference — <em>Smart Energy Systems</em> (Rome, 2024); <em>Energy System Analysis 7</em> (Dubrovnik, 2025).</li>
     <li><b>Local Organizing Committee</b>, 4th Latin American SDEWES Conference, Viña del Mar, Chile (2024).</li>
-    <li><b>Peer Reviewer</b> — <em>Energy</em> and <em>Computers &amp; Operations Research</em> (Elsevier); Agencia Nacional de Investigación y Desarrollo, Chile.</li>
+    <li><b>Peer Reviewer</b> — <em>Energy</em> (Elsevier) and <em>Computers &amp; Operations Research</em> (Elsevier); Agencia Nacional de Investigación y Desarrollo, Chile.</li>
     <li><b>Instructor and Presenter</b>, Explore Engineering Summer Camp, Texas Tech University (2018) — <em>Impact of Lean, from Manufacturing Processes to Everyday Life.</em></li>
   </ul>
 
@@ -564,7 +568,6 @@ footer{padding-block:48px 64px}
   <h2 class="sectitle">Contact</h2>
   <button type="button" class="photo-reveal" aria-label="Photo: giving an invited talk — click to view in color">
     <img src="assets/invited-talk.jpg" alt="Abhishake Kundu giving an invited talk">
-    <span class="photo-reveal-cap">Invited Talk</span>
   </button>
   <div class="foot-grid">
     <div class="foot-item">
@@ -578,8 +581,7 @@ footer{padding-block:48px 64px}
     <div class="foot-item">
       <h4>Profiles</h4>
       <a href="https://orcid.org/0000-0002-1086-481X">ORCID ↗</a><br>
-      <a href="https://scholar.google.com/citations?user=k4L0SMsAAAAJ&amp;hl=es&amp;oi=ao">Google Scholar ↗</a><br>
-      <a href="https://h2res.org/team.html">H2RES ↗</a>
+      <a href="https://scholar.google.com/citations?user=k4L0SMsAAAAJ&amp;hl=es&amp;oi=ao">Google Scholar ↗</a>
     </div>
     <div class="foot-item">
       <h4>Languages</h4>
@@ -590,7 +592,7 @@ footer{padding-block:48px 64px}
       <a class="cv-btn" href="assets/Abhishake_Kundu_CV.pdf" target="_blank" rel="noopener" id="cv-link-2">Download CV (PDF)</a>
     </div>
   </div>
-  <div class="fineprint">Page last updated October 2026.</div>
+  <div class="fineprint">Page last updated November 2026.</div>
 </footer>
 
 <script>
