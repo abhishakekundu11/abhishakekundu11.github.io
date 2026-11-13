@@ -126,16 +126,11 @@ a.cv-btn:hover{opacity:.88; text-decoration:none}
 .stat-label{font-family:var(--font-mono); font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-top:6px}
 .photo-reveal{
   display:block; width:280px; max-width:100%; margin:18px auto 0;
-  padding:0; border:1px solid var(--border); background:none; cursor:pointer;
-  position:relative; overflow:hidden; font:inherit; text-align:left;
+  padding:0; border:1px solid var(--border); background:none;
+  position:relative; overflow:hidden; text-align:left;
 }
 .photo-reveal img{
   display:block; width:100%; height:172px; object-fit:cover;
-  filter:grayscale(1) brightness(1.08) contrast(.9); opacity:.78;
-  transition:filter .35s ease, opacity .35s ease;
-}
-.photo-reveal:hover img, .photo-reveal:focus-visible img, .photo-reveal.revealed img{
-  filter:none; opacity:1;
 }
 
 .contact-photo{
@@ -565,9 +560,9 @@ footer{padding-block:48px 64px}
       <li><span class="conf-year tabular">2017</span><span>A Delivery Time Reduction Heuristic using Drones under Windy Conditions <span class="conf-loc">— IISE, Pittsburgh</span><br><span class="conf-cite">Kundu, A., &amp; Matis, T. I. (2017). <em>IIE Annual Conference Proceedings</em> — Institute of Industrial and Systems Engineers (IISE), pp. 1864–1869. <a href="https://www.proquest.com/openview/6b665e5e498f5a07f19ea9c4fae81756/1?pq-origsite=gscholar&amp;cbl=51908">ProQuest ↗</a></span></span></li>
     </ul>
     <div class="conf-photo">
-      <button type="button" class="photo-reveal" aria-label="Photo: presenting at SDEWES Rome, 2024 — click to view in color">
+      <div class="photo-reveal">
         <img src="assets/rome-2024-presenting.jpg" alt="Presenting at the SDEWES Conference, Rome 2024">
-      </button>
+      </div>
     </div>
   </div>
 
@@ -591,9 +586,9 @@ footer{padding-block:48px 64px}
   <span class="eyebrow">Get in touch</span>
   <h2 class="sectitle">Contact</h2>
   <div class="contact-photo">
-    <button type="button" class="photo-reveal" aria-label="Photo: giving an invited talk — click to view in color">
+    <div class="photo-reveal">
       <img src="assets/invited-talk.jpg" alt="Abhishake Kundu giving an invited talk">
-    </button>
+    </div>
   </div>
   <div class="foot-grid">
     <div class="foot-item">
@@ -665,20 +660,14 @@ footer{padding-block:48px 64px}
   }catch(e){}
 
   try{
-    var reveals = Array.prototype.slice.call(document.querySelectorAll('.photo-reveal'));
-    reveals.forEach(function(btn){
-      btn.addEventListener('click', function(){ btn.classList.toggle('revealed'); });
-    });
-  }catch(e){}
-
-  try{
     var cphoto = document.querySelector('.contact-photo');
     if (cphoto && 'IntersectionObserver' in window){
       var cobs = new IntersectionObserver(function(entries){
         entries.forEach(function(entry){
           if (entry.isIntersecting){
             cphoto.classList.add('in-view');
-            cobs.unobserve(entry.target);
+          } else {
+            cphoto.classList.remove('in-view');
           }
         });
       }, { threshold: 0.2 });
