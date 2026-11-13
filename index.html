@@ -138,6 +138,15 @@ a.cv-btn:hover{opacity:.88; text-decoration:none}
   filter:none; opacity:1;
 }
 
+.contact-photo{
+  opacity:0; transform:translateX(32px);
+  transition:opacity .7s ease, transform .7s ease;
+}
+.contact-photo.in-view{opacity:1; transform:translateX(0)}
+@media (prefers-reduced-motion: reduce){
+  .contact-photo{opacity:1; transform:none; transition:none}
+}
+
 /* sections */
 section{padding-block:44px}
 section + section{border-top:1px solid var(--border)}
@@ -581,9 +590,11 @@ footer{padding-block:48px 64px}
 <footer id="contact" class="wrap">
   <span class="eyebrow">Get in touch</span>
   <h2 class="sectitle">Contact</h2>
-  <button type="button" class="photo-reveal" aria-label="Photo: giving an invited talk — click to view in color">
-    <img src="assets/invited-talk.jpg" alt="Abhishake Kundu giving an invited talk">
-  </button>
+  <div class="contact-photo">
+    <button type="button" class="photo-reveal" aria-label="Photo: giving an invited talk — click to view in color">
+      <img src="assets/invited-talk.jpg" alt="Abhishake Kundu giving an invited talk">
+    </button>
+  </div>
   <div class="foot-grid">
     <div class="foot-item">
       <h4>Email</h4>
@@ -658,6 +669,23 @@ footer{padding-block:48px 64px}
     reveals.forEach(function(btn){
       btn.addEventListener('click', function(){ btn.classList.toggle('revealed'); });
     });
+  }catch(e){}
+
+  try{
+    var cphoto = document.querySelector('.contact-photo');
+    if (cphoto && 'IntersectionObserver' in window){
+      var cobs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting){
+            cphoto.classList.add('in-view');
+            cobs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      cobs.observe(cphoto);
+    } else if (cphoto) {
+      cphoto.classList.add('in-view');
+    }
   }catch(e){}
 })();
 </script>
