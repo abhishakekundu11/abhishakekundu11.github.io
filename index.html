@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Abhishake Kundu</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
@@ -84,15 +85,31 @@ header.hero{padding-block:48px 0}
   background:var(--surface); border:1px solid var(--border);
   padding:32px clamp(20px,4vw,40px);
 }
-.badge{
-  width:clamp(92px,16vw,132px); height:clamp(92px,16vw,132px); border-radius:50%;
-  background:var(--accent); color:var(--surface);
-  display:flex; align-items:center; justify-content:center;
-  font-family:var(--font-display); font-weight:600; font-size:1.3rem;
-  flex:none; overflow:hidden;
+.hero-grid{display:grid; grid-template-columns:1fr 240px; gap:36px; align-items:center}
+.hero-portrait{justify-self:end; width:240px; max-width:100%}
+@media (max-width:620px){
+  .hero-grid{grid-template-columns:1fr; gap:26px}
+  .hero-portrait{order:-1; justify-self:start; width:168px}
 }
-.badge img{width:100%; height:100%; object-fit:cover; display:block}
-.hero-top{display:flex; align-items:center; gap:18px; flex-wrap:wrap}
+
+/* shared photo frame: rounded image on a soft accent tint, offset to the top-right */
+.pframe{position:relative; display:block; width:100%}
+.pframe::before{
+  content:""; position:absolute; top:-10px; right:-10px; width:100%; height:100%;
+  border-radius:8px; background:color-mix(in srgb, var(--accent) 16%, var(--surface)); z-index:0;
+}
+.pframe img{
+  position:relative; z-index:1; display:block; width:100%; height:auto;
+  border-radius:8px; border:1px solid var(--border);
+}
+
+/* hero entrance: the one load animation on the page */
+@keyframes rise{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
+@keyframes fade{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+.hero-text{animation:rise .6s ease-out both}
+.hero-portrait{animation:fade .6s ease-out .15s both}
+@media (prefers-reduced-motion: reduce){.hero-text,.hero-portrait{animation:none}}
+
 h1.name{font-size:clamp(2rem,5vw,2.7rem); line-height:1.05}
 .role{color:var(--muted); font-size:1.05rem; margin-top:10px}
 .role strong{color:var(--fg); font-weight:600}
@@ -124,17 +141,24 @@ a.cv-btn:hover{opacity:.88; text-decoration:none}
 .stat-tile.shade-4 .stat-label{opacity:.88}
 .stat-num{font-family:var(--font-display); font-size:2rem; font-weight:600; line-height:1}
 .stat-label{font-family:var(--font-mono); font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-top:6px}
-.photo-reveal{
-  display:block; width:280px; max-width:100%; margin:18px auto 0;
-  padding:0; border:1px solid var(--border); background:none;
-  position:relative; overflow:hidden; text-align:left;
-}
-.photo-reveal img{
-  display:block; width:100%; height:172px; object-fit:cover;
+/* scroll reveal: fires once per visit; only active when JS is running (html.js) */
+.rv{transition:opacity .45s ease-out, transform .45s ease-out; transition-delay:var(--d,0ms)}
+html.js .rv:not(.on){opacity:0; transform:translateY(18px)}
+.sectitle.rv{--d:60ms}
+.stats-grid.rv{--d:250ms}
+.pub-item.rv:nth-child(2), .tl-item.rv:nth-child(2), .edu-item.rv:nth-child(2){--d:40ms}
+.pub-item.rv:nth-child(3), .tl-item.rv:nth-child(3), .edu-item.rv:nth-child(3){--d:80ms}
+.pub-item.rv:nth-child(4), .tl-item.rv:nth-child(4), .edu-item.rv:nth-child(4){--d:120ms}
+.pub-item.rv:nth-child(5), .tl-item.rv:nth-child(5), .edu-item.rv:nth-child(5){--d:160ms}
+.pub-item.rv:nth-child(n+6), .tl-item.rv:nth-child(n+6), .edu-item.rv:nth-child(n+6){--d:200ms}
+@media (prefers-reduced-motion: reduce){
+  html.js .rv:not(.on){opacity:1; transform:none}
+  .rv{transition:none}
 }
 
+/* contact photo: slides in from the left every time the section comes into view */
 .contact-photo{
-  opacity:0; transform:translateX(32px);
+  opacity:0; transform:translateX(-32px);
   transition:opacity .7s ease, transform .7s ease;
 }
 .contact-photo.in-view{opacity:1; transform:translateX(0)}
@@ -167,19 +191,38 @@ h2.sectitle{font-size:1.5rem; margin-bottom:22px}
 }
 .chip.accent{color:var(--accent); border-color:var(--accent)}
 
-/* timeline */
-.tl-item{display:grid; grid-template-columns:150px 1fr; gap:20px; padding-block:18px}
-.tl-item + .tl-item{border-top:1px solid var(--border)}
-@media (max-width:560px){.tl-item{grid-template-columns:1fr; gap:4px}}
-.tl-date{font-family:var(--font-mono); font-size:.82rem; color:var(--muted); white-space:nowrap}
+/* experience: timeline beside a sticky portrait */
+.exp-split{display:grid; grid-template-columns:1fr 240px; gap:36px; align-items:start}
+.exp-photo{position:sticky; top:84px}
+@media (max-width:620px){
+  .exp-split{grid-template-columns:1fr}
+  .exp-photo{position:static; order:-1; width:200px}
+}
+
+/* timeline: dated entries on a vertical rail */
+.tl-item{display:grid; grid-template-columns:1fr; gap:2px; padding:4px 0 22px 24px; position:relative}
+.tl-item::before{
+  content:""; position:absolute; left:0; top:11px; width:9px; height:9px; border-radius:50%;
+  background:var(--accent); z-index:1;
+}
+.tl-item::after{content:""; position:absolute; left:4px; top:14px; bottom:-6px; width:1px; background:var(--border)}
+.tl-group .tl-item:last-child::after{display:none}
+.tl-group .tl-item:last-child{padding-bottom:8px}
+.tl-date{font-family:var(--font-mono); font-size:.8rem; color:var(--muted); letter-spacing:.02em}
 .tl-org{font-weight:600; font-size:1.02rem}
 .tl-role{color:var(--accent); font-size:.95rem; margin-top:2px}
 .tl-detail{color:var(--muted); font-size:.92rem; margin-top:8px; line-height:1.55}
 .tl-detail b{color:var(--fg); font-weight:600}
 
 /* education */
-.edu-item{padding-block:14px}
-.edu-item + .edu-item{border-top:1px solid var(--border)}
+.edu-item{padding:4px 0 20px 24px; position:relative}
+.edu-item::before{
+  content:""; position:absolute; left:0; top:11px; width:9px; height:9px; border-radius:50%;
+  background:var(--accent); z-index:1;
+}
+.edu-item::after{content:""; position:absolute; left:4px; top:14px; bottom:-6px; width:1px; background:var(--border)}
+.edu-group .edu-item:last-child::after{display:none}
+.edu-group .edu-item:last-child{padding-bottom:8px}
 .edu-deg{font-weight:600}
 .edu-sub{color:var(--muted); font-size:.92rem; margin-top:4px}
 
@@ -223,9 +266,11 @@ h2.sectitle{font-size:1.5rem; margin-bottom:22px}
 .conf-list li:first-child{border-top:none}
 
 .conf-split{display:grid; grid-template-columns:1fr 320px; gap:28px; align-items:start}
-.conf-photo{position:sticky; top:76px}
-.conf-photo .photo-reveal{width:100%; margin:0}
-.conf-photo .photo-reveal img{height:auto}
+.conf-photo{position:sticky; top:84px}
+/* on wide screens the photo hangs past the right edge of the text column; the list stays aligned */
+@media (min-width:980px){
+  .conf-split{grid-template-columns:1fr 380px; margin-right:-96px}
+}
 @media (max-width:620px){
   .conf-split{grid-template-columns:1fr}
   .conf-photo{position:static; order:-1}
@@ -236,10 +281,18 @@ h2.sectitle{font-size:1.5rem; margin-bottom:22px}
 
 /* contact / footer */
 footer{padding-block:48px 64px}
-.foot-grid{display:flex; flex-wrap:wrap; gap:28px; margin-top:20px}
+.contact-split{display:grid; grid-template-columns:300px 1fr; gap:36px; align-items:start; margin-top:8px}
+.foot-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px 28px}
+.foot-item.wide{grid-column:1 / -1}
+@media (max-width:620px){
+  .contact-split{grid-template-columns:1fr}
+  .contact-photo{max-width:300px}
+}
+@media (max-width:420px){.foot-grid{grid-template-columns:1fr}}
 .foot-item h4{font-family:var(--font-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 6px; font-weight:600}
 .fineprint{margin-top:40px; font-size:.78rem; color:var(--muted); font-family:var(--font-mono)}
 </style>
+<script>document.documentElement.classList.add('js');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 
@@ -258,29 +311,31 @@ footer{padding-block:48px 64px}
 <header class="hero wrap">
   <div class="hero-stack">
     <div class="hero-card">
-      <div class="hero-top">
-        <div class="badge"><img src="assets/biodata.jpg" alt="Abhishake Kundu" loading="lazy"></div>
-        <div>
+      <div class="hero-grid">
+        <div class="hero-text">
           <h1 class="name">Abhishake Kundu</h1>
           <p class="role"><strong>Research Associate</strong> · School of Industrial Engineering<br>Pontificia Universidad Católica de Valparaíso, Chile</p>
+          <p class="pitch">I work on operations research and data science for energy systems, logistics, and healthcare.</p>
+          <div class="contact-row">
+            <div class="contact-item">
+              <a href="mailto:abhishake.kundu@pucv.cl" id="email-link">abhishake.kundu@pucv.cl</a>
+              <button class="copy-btn" id="copy-email" data-copy="abhishake.kundu@pucv.cl" aria-label="Copy email address">Copy</button>
+            </div>
+            <div class="contact-item"><a href="https://orcid.org/0000-0002-1086-481X">ORCID ↗</a></div>
+            <div class="contact-item"><a href="https://scholar.google.com/citations?user=k4L0SMsAAAAJ&amp;hl=es&amp;oi=ao">Google Scholar ↗</a></div>
+            <div class="contact-item"><a class="cv-btn" href="assets/Abhishake_Kundu_CV.pdf" target="_blank" rel="noopener" id="cv-link">Download CV (PDF)</a></div>
+          </div>
         </div>
-      </div>
-      <p class="pitch">I work on operations research and data science for energy systems, logistics, and healthcare.</p>
-      <div class="contact-row">
-        <div class="contact-item">
-          <a href="mailto:abhishake.kundu@pucv.cl" id="email-link">abhishake.kundu@pucv.cl</a>
-          <button class="copy-btn" id="copy-email" data-copy="abhishake.kundu@pucv.cl" aria-label="Copy email address">Copy</button>
+        <div class="hero-portrait">
+          <div class="pframe"><img src="assets/portrait.jpg" alt="Abhishake Kundu" width="640" height="799" fetchpriority="high"></div>
         </div>
-        <div class="contact-item"><a href="https://orcid.org/0000-0002-1086-481X">ORCID ↗</a></div>
-        <div class="contact-item"><a href="https://scholar.google.com/citations?user=k4L0SMsAAAAJ&amp;hl=es&amp;oi=ao">Google Scholar ↗</a></div>
-        <div class="contact-item"><a class="cv-btn" href="assets/Abhishake_Kundu_CV.pdf" target="_blank" rel="noopener" id="cv-link">Download CV (PDF)</a></div>
       </div>
     </div>
   </div>
 </header>
 
 <section class="stats-wrap wrap" aria-label="At a glance">
-  <div class="stats-grid">
+  <div class="stats-grid rv">
     <div class="stat-tile shade-1"><div class="stat-num tabular">12+</div><div class="stat-label">Publications (since 2022)</div></div>
     <div class="stat-tile shade-2"><div class="stat-num tabular">9</div><div class="stat-label">Conference Talks</div></div>
     <div class="stat-tile shade-3"><div class="stat-num tabular">10</div><div class="stat-label">Years in OR &amp; Energy Systems</div></div>
@@ -289,19 +344,19 @@ footer{padding-block:48px 64px}
 </section>
 
 <section id="research" class="wrap">
-  <span class="eyebrow">Research</span>
-  <h2 class="sectitle">Focus</h2>
+  <span class="eyebrow rv">Research</span>
+  <h2 class="sectitle rv">Focus</h2>
   <div class="split-grid">
-    <div class="split-card">
+    <div class="split-card rv">
       <h3>Methods</h3>
       <p>Combinatorial optimization and heuristics; game theoretic models and bi-level programming; machine learning and big data analytics; statistical analysis (parametric and non-parametric).</p>
     </div>
-    <div class="split-card">
+    <div class="split-card rv">
       <h3>Applications</h3>
       <p>Large-scale energy systems modeling; energy markets; transport sector decarbonization; emerging technologies in logistics; multi-modal vehicle routing; healthcare analytics.</p>
     </div>
   </div>
-  <div class="chiprow">
+  <div class="chiprow rv">
     <span class="chip">H2RES Core Developer</span>
     <span class="chip">Python</span><span class="chip">Java</span><span class="chip">R</span><span class="chip">C++</span>
     <span class="chip">CPLEX</span><span class="chip">Gurobi</span><span class="chip">ARENA</span><span class="chip">Simio</span>
@@ -310,10 +365,13 @@ footer{padding-block:48px 64px}
 </section>
 
 <section id="experience" class="wrap">
-  <span class="eyebrow">Experience</span>
-  <h2 class="sectitle">Academic Appointments</h2>
+  <span class="eyebrow rv">Experience</span>
+  <h2 class="sectitle rv">Academic Appointments</h2>
 
-  <div class="tl-item">
+  <div class="exp-split">
+  <div class="exp-main">
+  <div class="tl-group">
+  <div class="tl-item rv">
     <div class="tl-date tabular">Apr 2026 — Present</div>
     <div>
       <div class="tl-org">Pontificia Universidad Católica de Valparaíso, Chile</div>
@@ -323,7 +381,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="tl-item">
+  <div class="tl-item rv">
     <div class="tl-date tabular">Jul 2023 — Mar 2026</div>
     <div>
       <div class="tl-org">Pontificia Universidad Católica de Valparaíso, Chile</div>
@@ -333,7 +391,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="tl-item">
+  <div class="tl-item rv">
     <div class="tl-date tabular">Sep 2016 — Oct 2021</div>
     <div>
       <div class="tl-org">Texas Tech University, Lubbock, TX</div>
@@ -341,10 +399,12 @@ footer{padding-block:48px 64px}
       <div class="tl-detail">Optimization, engineering statistics, and simulation &amp; programming; see <a href="#teaching">Teaching</a> for course detail.</div>
     </div>
   </div>
+  </div>
 
-  <h2 class="sectitle" style="margin-top:40px">Industry Experience</h2>
+  <h2 class="sectitle rv" style="margin-top:36px">Industry Experience</h2>
 
-  <div class="tl-item">
+  <div class="tl-group">
+  <div class="tl-item rv">
     <div class="tl-date tabular">Feb 2013 — Mar 2014</div>
     <div>
       <div class="tl-org">Total Instrumentation Services, Cochin, India</div>
@@ -352,45 +412,53 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="tl-item">
+  <div class="tl-item rv">
     <div class="tl-date tabular">Jul 2011 — Dec 2012</div>
     <div>
       <div class="tl-org">Phillips Carbon Black Ltd., Cochin, India</div>
       <div class="tl-role">Assistant Manager (Instrumentation)</div>
     </div>
   </div>
+  </div>
 
-  <h2 class="sectitle" style="margin-top:40px">Education</h2>
-  <div class="edu-item">
+  <h2 class="sectitle rv" style="margin-top:36px">Education</h2>
+  <div class="edu-group">
+  <div class="edu-item rv">
     <div class="edu-deg">Ph.D., Industrial, Manufacturing and Systems Engineering</div>
     <div class="edu-sub">Texas Tech University, Lubbock, TX · May 2022</div>
     <div class="edu-sub">Kundu, A. (2022). <em>Developing efficient order and split heuristics for coordinated covering tour problems with drones.</em> <a href="https://hdl.handle.net/2346/89264">Doctoral dissertation ↗</a></div>
     <div class="edu-sub">Research Exchange Student, School of Industrial Engineering, Pontificia Universidad Católica de Valparaíso, Chile · Jan 2019</div>
   </div>
-  <div class="edu-item">
+  <div class="edu-item rv">
     <div class="edu-deg">M.S., Industrial, Manufacturing and Systems Engineering</div>
     <div class="edu-sub">Texas Tech University, Lubbock, TX · Dec 2016 · GPA 4.0 / 4.0</div>
   </div>
-  <div class="edu-item">
+  <div class="edu-item rv">
     <div class="edu-deg">B.Tech., Applied Electronics and Instrumentation Engineering</div>
     <div class="edu-sub">Heritage Institute of Technology, Kolkata, India · May 2011 · GPA 8.21 / 10</div>
+  </div>
+  </div>
+  </div>
+  <div class="exp-photo">
+    <div class="pframe"><img src="assets/headshot-warm.jpg" alt="Abhishake Kundu" width="640" height="640" loading="lazy"></div>
+  </div>
   </div>
 </section>
 
 <section id="publications" class="wrap">
-  <span class="eyebrow">Output</span>
-  <h2 class="sectitle">Publications</h2>
+  <span class="eyebrow rv">Output</span>
+  <h2 class="sectitle rv">Publications</h2>
 
-  <div class="pub-group-label">Journal Articles</div>
+  <div class="pub-group-label rv">Journal Articles</div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2026</div>
     <div class="pub-body">
       <p>Kundu, A., Flores, F., Soto Morales, I., Villanueva García, I., Loaiza González, I., Khan, M.M.K., &amp; Feijoo, F. A comparative assessment of hydrogen certification in APEC economies: Maturity, design, and stringency. <span class="pub-venue">Renewable and Sustainable Energy Reviews.</span> <span class="status-tag">Under first review</span></p>
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2026</div>
     <div class="pub-body">
       <p>Herc, L., Kundu, A., Ali, S., Feijoo, F., Pfeifer, A., &amp; Duić, N. (2026). Implementation of the myopic approach in the long-term energy planning and capacity expansion model; examination in a multizonal case. <span class="pub-venue">Energy Conversion and Management</span>, 370, 122178.</p>
@@ -398,7 +466,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2026</div>
     <div class="pub-body">
       <p>Pastore, L. M., Groppi, D., Feijoo, F., Flores, F., Kundu, A., Herc, L., Astiaso Garcia, D., de Santoli, L., &amp; Duić, N. (2026). Assessing the future cost of hydrogen in a fully decarbonised Italian energy system: a comparison of myopic and perfect foresight optimisation approaches. <span class="pub-venue">International Journal of Hydrogen Energy</span>, 268, 157058.</p>
@@ -406,7 +474,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2026</div>
     <div class="pub-body">
       <p>Oyarzún, F., Feijoo, F., Kundu, A., &amp; Castaneda, M. (2026). Assessing policy strategies for residential solar photovoltaic adoption: A system dynamics approach with heuristic optimization. <span class="pub-venue">Renewable Energy</span>, 274, 126127.</p>
@@ -414,14 +482,14 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2025</div>
     <div class="pub-body">
       <p>Feijoo, F., Kundu, A., Flores, F., &amp; Paredes, P. Energy community strategies based on heat and electricity demand response and technology efficiency: A Stackelberg approach. <span class="pub-venue">Renewable Energy.</span> <span class="status-tag">Under second review</span></p>
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2025</div>
     <div class="pub-body">
       <p>Kundu, A., &amp; Feijoo, F. A study on coalition formation and bargaining power for the North American natural gas market. <span class="pub-venue">Utilities Policy.</span> <span class="status-tag">Under second review</span></p>
@@ -429,7 +497,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2025</div>
     <div class="pub-body">
       <p>Schaumann, S., Kundu, A., Pina-Pardo, J.C., Winkenbach, M., Gatica, R., Wagner, S.M., &amp; Matis, T.I. (2025). The Flying Sidekick Traveling Salesman Problem with Multiple Drops: A Simple and Effective Heuristic Approach. <span class="pub-venue">Computers &amp; Industrial Engineering</span>, 210, 111523.</p>
@@ -437,7 +505,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2025</div>
     <div class="pub-body">
       <p>Lillo Otarola, L., de la Fuente-Mella, H., Peña Domarchi, A., Kundu, A., &amp; Ceroni-Díaz, J. (2025). Optimal scheduling of the wine-bottling process: A multi-dependency model with hydraulic considerations. <span class="pub-venue">Applied Sciences</span>, 15(9), 4697.</p>
@@ -445,7 +513,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2025</div>
     <div class="pub-body">
       <p>Feijoo, F., Flores, F., Kundu, A., Pfeifer, A., Herc, L., Prieto, A. L., &amp; Duic, N. (2025). Tradeoffs between economy wide future net zero and net negative economy systems: The case of Chile. <span class="pub-venue">Renewable and Sustainable Energy Reviews</span>, 207, 114945.</p>
@@ -453,7 +521,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2025</div>
     <div class="pub-body">
       <p>Kundu, A., Flores, F., Fernández Vázquez, C. A. A., Godoy, H., Quoilin, S., Castaneda, M., &amp; Feijoo, F. (2025). Evaluating the impact of flexibilities from heating and electromobility in Chile's carbon neutrality pathway. <span class="pub-venue">Buildings</span>, 15(1), 68.</p>
@@ -461,7 +529,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2024</div>
     <div class="pub-body">
       <p>Feijoo, F., Kundu, A., Flores, F., &amp; Matamala, Y. (2024). Photovoltaic sizing assessment for microgrid communities under load shifting constraints and endogenous electricity prices: A Stackelberg approach. <span class="pub-venue">Energy</span>, 307, 132758.</p>
@@ -469,7 +537,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2023</div>
     <div class="pub-body">
       <p>Kundu, A., Feijoo, F., Mesa, F., Sankaranarayanan, S., Aristizábal, A. J., &amp; Castaneda, M. (2023). Power on the go: A solution to address electric vehicle charging challenges. <span class="pub-venue">Mathematics</span>, 12(1), 91.</p>
@@ -477,7 +545,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2022</div>
     <div class="pub-body">
       <p>Kundu, A., Feijoo, F., Martinez, D., Hermosilla, M., &amp; Matis, T.I. (2022). Prospective adverse event risk evaluation in clinical trials. <span class="pub-venue">Health Care Management Science</span>, 25(1), 89–99.</p>
@@ -485,7 +553,7 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2022</div>
     <div class="pub-body">
       <p>Kundu, A., Gatica-Escobar, R., &amp; Matis, T. I. (2022). An efficient routing heuristic for a drone-assisted delivery problem. <span class="pub-venue">IMA Journal of Management Mathematics</span>, 33(4), 583–601.</p>
@@ -493,22 +561,22 @@ footer{padding-block:48px 64px}
     </div>
   </div>
 
-  <div class="pub-group-label">Working Papers</div>
-  <div class="pub-item">
+  <div class="pub-group-label rv">Working Papers</div>
+  <div class="pub-item rv">
     <div class="pub-year tabular">2026</div>
     <div class="pub-body"><p>Kundu, A., Starčević, M., Feijoo, F., &amp; Duić, N. Study on the power-to-vehicle flexibilities in the H2RES model under endogenous pricing and battery degradation. <span class="pub-venue">Target submission: Dec 2026.</span></p></div>
   </div>
-  <div class="pub-item">
+  <div class="pub-item rv">
     <div class="pub-year tabular">2027</div>
     <div class="pub-body"><p>Kundu, A., Prieto, D., &amp; Aros, D. Quantifying the cost of priorities in home healthcare routing: A lexicographic MILP study. <span class="pub-venue">Target submission: Mar 2027.</span></p></div>
   </div>
 </section>
 
 <section id="teaching" class="wrap">
-  <span class="eyebrow">Teaching</span>
-  <h2 class="sectitle">Courses</h2>
+  <span class="eyebrow rv">Teaching</span>
+  <h2 class="sectitle rv">Courses</h2>
 
-  <div class="teach-block">
+  <div class="teach-block rv">
     <div class="teach-inst">Pontificia Universidad Católica de Valparaíso, Chile <span class="teach-role">· Lecturer</span></div>
     <div class="teach-when">Jul 2023 — Present</div>
     <ul class="teach-list">
@@ -518,7 +586,7 @@ footer{padding-block:48px 64px}
     </ul>
   </div>
 
-  <div class="teach-block">
+  <div class="teach-block rv">
     <div class="teach-inst">Texas Tech University, Lubbock, TX <span class="teach-role">· Graduate Part-time Instructor / Teaching and Lab Assistant</span></div>
     <div class="teach-when">Sep 2016 — Oct 2021</div>
     <ul class="teach-list">
@@ -530,25 +598,25 @@ footer{padding-block:48px 64px}
 </section>
 
 <section id="service" class="wrap">
-  <span class="eyebrow">Service</span>
-  <h2 class="sectitle">Service &amp; Scholarly Activity</h2>
+  <span class="eyebrow rv">Service</span>
+  <h2 class="sectitle rv">Service &amp; Scholarly Activity</h2>
 
-  <div class="svc-sub">Grants</div>
-  <ul class="svc-list">
+  <div class="svc-sub rv">Grants</div>
+  <ul class="svc-list rv">
     <li><b>NSF Award #2124331</b>, Senior Personnel (2021) — <em>I-Corps: Assessment Platform for Operationalizing High Reliability Organizational Hallmarks in Healthcare.</em> Funding: $50,000.</li>
   </ul>
 
-  <div class="svc-sub">Technical Reports &amp; Policy Contributions</div>
-  <ul class="svc-list">
+  <div class="svc-sub rv">Technical Reports &amp; Policy Contributions</div>
+  <ul class="svc-list rv">
     <li><b>Feijoo, Kundu, Flores, Baeriswyl Concha, Soto Morales, Villanueva García</b> (2026). Certification of Hydrogen and its Derivatives in APEC Economies: Its Role in Driving the Market. APEC Project EWG 105 2024A. <a href="https://www.apec.org/publications/2026/01/certification-of-hydrogen-and-its-derivatives-in-apec-economies--its-role-in-driving-the-market">Read ↗</a></li>
     <li><b>Feijoo, Kundu, Flores, Paredes, Soto Morales, Villanueva García</b> (2026). Building Resilient Energy Policies in Asia-Pacific. APEC Project EWG 104 2024A. <a href="https://www.apec.org/publications/2026/04/building-resilient-energy-policies-in-asia-pacific">Read ↗</a></li>
     <li><b>Feijoo, Kundu, Flores, Paredes</b> (2026). Section 3.3: The role of energy decarbonization in the water–energy–food nexus. In <em>Water-Energy-Food Nexus in Chile</em>, Comité Científico Asesor de Cambio Climático, Chile. <a href="https://doi.org/10.5281/zenodo.20071201">Read ↗</a></li>
     <li><b>Feijoo, Flores, Gonzalez, Paredes, Kundu, Puin</b>. Local Demand as an Enabler to a Low-Carbon Hydrogen Economy. APEC Project EWG 105 2025A (forthcoming, 2027).</li>
   </ul>
 
-  <div class="svc-sub">Conference Presentations</div>
+  <div class="svc-sub rv">Conference Presentations</div>
   <div class="conf-split">
-    <ul class="conf-list">
+    <ul class="conf-list rv">
       <li><span class="conf-year tabular">2026</span><span>Current Status and Comparative Insights of Hydrogen Certification in APEC Economies <span class="conf-loc">— SDEWES, Cartagena</span></span></li>
       <li><span class="conf-year tabular">2025</span><span>Study on the Power-to-Vehicle Flexibilities in the H2RES Model under Endogenous Pricing and Battery Degradation <span class="conf-loc">— SDEWES, Dubrovnik</span></span></li>
       <li><span class="conf-year tabular">2024</span><span>Power on the Go: A Multi-objective Approach to Ease Electric Vehicle Charging Challenges <span class="conf-loc">— SDEWES, Rome</span></span></li>
@@ -560,14 +628,14 @@ footer{padding-block:48px 64px}
       <li><span class="conf-year tabular">2017</span><span>A Delivery Time Reduction Heuristic using Drones under Windy Conditions <span class="conf-loc">— IISE, Pittsburgh</span><br><span class="conf-cite">Kundu, A., &amp; Matis, T. I. (2017). <em>IIE Annual Conference Proceedings</em> — Institute of Industrial and Systems Engineers (IISE), pp. 1864–1869. <a href="https://www.proquest.com/openview/6b665e5e498f5a07f19ea9c4fae81756/1?pq-origsite=gscholar&amp;cbl=51908">ProQuest ↗</a></span></span></li>
     </ul>
     <div class="conf-photo">
-      <div class="photo-reveal">
-        <img src="assets/rome-2024-presenting.jpg" alt="Presenting at the SDEWES Conference, Rome 2024">
+      <div class="pframe">
+        <img src="assets/rome-2024-presenting.jpg" alt="Presenting at the SDEWES Conference, Rome 2024" width="800" height="860" loading="lazy">
       </div>
     </div>
   </div>
 
-  <div class="svc-sub">Service</div>
-  <ul class="svc-list">
+  <div class="svc-sub rv">Service</div>
+  <ul class="svc-list rv">
     <li><b>Scientific Advisory Board</b>, SDEWES Conference — Rome (2024), Dubrovnik (2025), Oujda-Saidia (2025), Gran Canaria (2026), Cartagena (2026), Dar es Salaam (2027).</li>
     <li><b>Session Chair</b>, SDEWES Conference — <em>Smart Energy Systems</em> (Rome, 2024); <em>Energy System Analysis 7</em> (Dubrovnik, 2025).</li>
     <li><b>Local Organizing Committee</b>, 4th Latin American SDEWES Conference, Viña del Mar, Chile (2024).</li>
@@ -575,42 +643,44 @@ footer{padding-block:48px 64px}
     <li><b>Instructor and Presenter</b>, Explore Engineering Summer Camp, Texas Tech University (2018) — <em>Impact of Lean, from Manufacturing Processes to Everyday Life.</em></li>
   </ul>
 
-  <div class="svc-sub">Awards &amp; Honors</div>
-  <ul class="svc-list">
+  <div class="svc-sub rv">Awards &amp; Honors</div>
+  <ul class="svc-list rv">
     <li><b>Industrial Engineering Graduate Scholarship</b>, Texas Tech University (2014–2016).</li>
     <li><b>Best Presenter Award</b>, III Workshop on Data Science, Valparaíso, Chile (2018).</li>
   </ul>
 </section>
 
 <footer id="contact" class="wrap">
-  <span class="eyebrow">Get in touch</span>
-  <h2 class="sectitle">Contact</h2>
-  <div class="contact-photo">
-    <div class="photo-reveal">
-      <img src="assets/invited-talk.jpg" alt="Abhishake Kundu giving an invited talk">
+  <span class="eyebrow rv">Get in touch</span>
+  <h2 class="sectitle rv">Contact</h2>
+  <div class="contact-split">
+    <div class="contact-photo">
+      <div class="pframe">
+        <img src="assets/invited-talk.jpg" alt="Abhishake Kundu giving an invited talk" width="900" height="706" loading="lazy">
+      </div>
     </div>
-  </div>
-  <div class="foot-grid">
-    <div class="foot-item">
-      <h4>Email</h4>
-      <a href="mailto:abhishake.kundu@pucv.cl">abhishake.kundu@pucv.cl</a>
-    </div>
-    <div class="foot-item">
-      <h4>Affiliation</h4>
-      School of Industrial Engineering<br>Pontificia Universidad Católica de Valparaíso<br>Valparaíso Region, Chile
-    </div>
-    <div class="foot-item">
-      <h4>Profiles</h4>
-      <a href="https://orcid.org/0000-0002-1086-481X">ORCID ↗</a><br>
-      <a href="https://scholar.google.com/citations?user=k4L0SMsAAAAJ&amp;hl=es&amp;oi=ao">Google Scholar ↗</a>
-    </div>
-    <div class="foot-item">
-      <h4>Languages</h4>
-      English, Bengali, Hindi, Spanish (moderate)
-    </div>
-    <div class="foot-item">
-      <h4>Full CV</h4>
-      <a class="cv-btn" href="assets/Abhishake_Kundu_CV.pdf" target="_blank" rel="noopener" id="cv-link-2">Download CV (PDF)</a>
+    <div class="foot-grid rv">
+      <div class="foot-item">
+        <h4>Email</h4>
+        <a href="mailto:abhishake.kundu@pucv.cl">abhishake.kundu@pucv.cl</a>
+      </div>
+      <div class="foot-item">
+        <h4>Profiles</h4>
+        <a href="https://orcid.org/0000-0002-1086-481X">ORCID ↗</a><br>
+        <a href="https://scholar.google.com/citations?user=k4L0SMsAAAAJ&amp;hl=es&amp;oi=ao">Google Scholar ↗</a>
+      </div>
+      <div class="foot-item wide">
+        <h4>Affiliation</h4>
+        School of Industrial Engineering<br>Pontificia Universidad Católica de Valparaíso<br>Valparaíso Region, Chile
+      </div>
+      <div class="foot-item">
+        <h4>Languages</h4>
+        English, Bengali, Hindi, Spanish (moderate)
+      </div>
+      <div class="foot-item">
+        <h4>Full CV</h4>
+        <a class="cv-btn" href="assets/Abhishake_Kundu_CV.pdf" target="_blank" rel="noopener" id="cv-link-2">Download CV (PDF)</a>
+      </div>
     </div>
   </div>
   <div class="fineprint">Page last updated November 2026.</div>
@@ -674,6 +744,54 @@ footer{padding-block:48px 64px}
       cobs.observe(cphoto);
     } else if (cphoto) {
       cphoto.classList.add('in-view');
+    }
+  }catch(e){}
+
+  /* scroll reveal: each .rv block rises in once, the first time it enters the viewport */
+  try{
+    var rvs = Array.prototype.slice.call(document.querySelectorAll('.rv'));
+    if (rvs.length && 'IntersectionObserver' in window){
+      var robs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting){
+            entry.target.classList.add('on');
+            robs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.05, rootMargin: '0px 0px -8% 0px' });
+      rvs.forEach(function(el){ robs.observe(el); });
+    } else {
+      rvs.forEach(function(el){ el.classList.add('on'); });
+    }
+  }catch(e){
+    try{ Array.prototype.slice.call(document.querySelectorAll('.rv')).forEach(function(el){ el.classList.add('on'); }); }catch(e2){}
+  }
+
+  /* stat counters: count up from zero the first time the strip is seen */
+  try{
+    var strip = document.querySelector('.stats-grid');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (strip && !reduce && 'IntersectionObserver' in window){
+      var nums = Array.prototype.slice.call(strip.querySelectorAll('.stat-num')).map(function(el){
+        var m = /^(\d+)(.*)$/.exec(el.textContent.trim());
+        return m ? { el: el, target: parseInt(m[1], 10), suffix: m[2] } : null;
+      }).filter(Boolean);
+      var ran = false;
+      var sobs = new IntersectionObserver(function(entries){
+        if (ran || !entries.some(function(e){ return e.isIntersecting; })) return;
+        ran = true; sobs.disconnect();
+        var t0 = null, dur = 900;
+        function step(ts){
+          if (t0 === null) t0 = ts;
+          var p = Math.min(1, (ts - t0) / dur);
+          var eased = 1 - Math.pow(1 - p, 3);
+          nums.forEach(function(n){ n.el.textContent = Math.round(n.target * eased) + n.suffix; });
+          if (p < 1) requestAnimationFrame(step);
+        }
+        nums.forEach(function(n){ n.el.textContent = '0' + n.suffix; });
+        requestAnimationFrame(step);
+      }, { threshold: 0.4 });
+      sobs.observe(strip);
     }
   }catch(e){}
 })();
