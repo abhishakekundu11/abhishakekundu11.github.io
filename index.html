@@ -767,28 +767,49 @@ footer{padding-block:48px 64px}
     try{ Array.prototype.slice.call(document.querySelectorAll('.rv')).forEach(function(el){ el.classList.add('on'); }); }catch(e2){}
   }
 
-  /* stat counters: count up from zero the first time the strip is seen */
+  /* stat counters: each tile counts up from 1 to its number, once per page load.
+     The numbers hold at 1 until the strip has finished fading in, so the count is
+     actually seen; after that they stay at their final values however often the
+     strip scrolls in and out of view. */
   try{
     var strip = document.querySelector('.stats-grid');
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (strip && !reduce && 'IntersectionObserver' in window){
-      var nums = Array.prototype.slice.call(strip.querySelectorAll('.stat-num')).map(function(el){
+      var nums = Array.prototype.slice.call(strip.querySelectorAll('.stat-num')).map(function(el, i){
         var m = /^(\d+)(.*)$/.exec(el.textContent.trim());
-        return m ? { el: el, target: parseInt(m[1], 10), suffix: m[2] } : null;
+        return m ? { el: el, target: parseInt(m[1], 10), suffix: m[2], lag: i * 120 } : null;
       }).filter(Boolean);
+      var DUR = 1600, done = false;
+      var finish = function(){
+        done = true;
+        nums.forEach(function(n){ n.el.textContent = n.target + n.suffix; });
+      };
+      nums.forEach(function(n){ if (n.target > 1) n.el.textContent = '1' + n.suffix; });
+      window.addEventListener('beforeprint', finish);
       var ran = false;
       var sobs = new IntersectionObserver(function(entries){
         if (ran || !entries.some(function(e){ return e.isIntersecting; })) return;
         ran = true; sobs.disconnect();
-        var t0 = null, dur = 900;
+        var t0 = null, seen = null;
         function step(ts){
-          if (t0 === null) t0 = ts;
-          var p = Math.min(1, (ts - t0) / dur);
-          var eased = 1 - Math.pow(1 - p, 3);
-          nums.forEach(function(n){ n.el.textContent = Math.round(n.target * eased) + n.suffix; });
-          if (p < 1) requestAnimationFrame(step);
+          if (done) return;
+          if (t0 === null){
+            /* wait for the strip's own fade-in before starting the count */
+            if (seen === null) seen = ts;
+            var visible = parseFloat(window.getComputedStyle(strip).opacity) > 0.9;
+            if (!visible && ts - seen < 2500){ requestAnimationFrame(step); return; }
+            t0 = ts;
+          }
+          var allDone = true;
+          nums.forEach(function(n){
+            var p = Math.max(0, Math.min(1, (ts - t0 - n.lag) / DUR));
+            if (p < 1) allDone = false;
+            var eased = 1 - (1 - p) * (1 - p);
+            var v = n.target > 1 ? 1 + Math.round((n.target - 1) * eased) : n.target;
+            n.el.textContent = v + n.suffix;
+          });
+          if (allDone) finish(); else requestAnimationFrame(step);
         }
-        nums.forEach(function(n){ n.el.textContent = '0' + n.suffix; });
         requestAnimationFrame(step);
       }, { threshold: 0.4 });
       sobs.observe(strip);
